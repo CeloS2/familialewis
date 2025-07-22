@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Família Lewis - Legado Dourado</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.min.js"></script>
+</head>
+<body>
+    <!-- Canvas para o dragão 3D -->
+    <div id="dragon-container"></div>
+    
+    <div class="gold-particles" id="particles-js"></div>
+    
+    <header class="luxury-header">
+        <div class="header-content">
+            <h1 class="gold-text glitch" data-text="Família Lewis">Família Lewis</h1>
+            <p class="gold-subtitle">Ouro • Poder • Tradição</p>
+        </div>
+    </header>
+
+    <nav class="dragon-nav">
+        <ul>
+            <li><a href="#" class="nav-link" data-text="História">História</a></li>
+            <li><a href="#" class="nav-link" data-text="Linhagem">Linhagem</a></li>
+            <li><a href="#" class="nav-link" data-text="Tesouros">Tesouros</a></li>
+            <li><a href="#" class="nav-link" data-text="Herança">Herança</a></li>
+            <li><a href="#" class="nav-link" data-text="Contato">Contato</a></li>
+        </ul>
+        <div class="nav-dragon-trail"></div>
+    </nav>
+
+    <main class="dragon-main">
+        <section class="dragon-section">
+            <div class="gold-plaque">
+                <h2 class="section-title">O <span class="dragon-word">Dragão</span> Dourado</h2>
+                <p class="gold-text">Símbolo máximo da nossa linhagem, guardião do nosso legado.</p>
+            </div>
+        </section>
+
+        <section class="scroll-section">
+            <div class="scroll-content">
+                <article class="history-item">
+                    <h3>1689</h3>
+                    <p>Fundada por Alistair Lewis, nossa família estabeleceu as primeiras rotas comerciais com o Oriente.</p>
+                </article>
+                <article class="history-item">
+                    <h3>1823</h3>
+                    <p>Construção do Palácio Lewis, com sua icônica cúpula revestida a ouro.</p>
+                </article>
+                <article class="history-item">
+                    <h3>2023</h3>
+                    <p>Celebrando 334 anos de excelência e tradição.</p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="dragon-footer">
+        <div class="footer-sigil">
+            <div class="sigil-dragon"></div>
+            <p>Família Lewis ©</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
