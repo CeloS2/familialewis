@@ -203,3 +203,106 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 150);
 });
+// Cena 3D do Dragão - Versão Mobile Responsiva
+const dragonContainer = document.getElementById('dragon-container');
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio); // Melhora a qualidade em mobile
+dragonContainer.appendChild(renderer.domElement);
+
+// Luzes ajustadas para mobile
+const ambientLight = new THREE.AmbientLight(0x404040);
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xd4af37, 1);
+directionalLight.position.set(0.5, 0.5, 0.5); // Posição ajustada para mobile
+scene.add(directionalLight);
+
+// Carregar modelo de dragão real
+const loader = new THREE.GLTFLoader();
+let dragon;
+
+// Usando um modelo de dragão aberto (pode substituir pelo seu próprio)
+loader.load(
+    'https://cdn.jsdelivr.net/gh/mrdoob/three.js@dev/examples/models/gltf/DragonAttenuation/DragonAttenuation.gltf',
+    function (gltf) {
+        dragon = gltf.scene;
+        dragon.scale.set(0.5, 0.5, 0.5); // Escala menor para mobile
+        dragon.position.y = -1; // Posição ajustada
+        dragon.rotation.y = Math.PI / 4;
+        
+        // Material dourado
+        dragon.traverse(function(child) {
+            if (child.isMesh) {
+                child.material = new THREE.MeshStandardMaterial({
+                    color: 0xd4af37,
+                    metalness: 0.9,
+                    roughness: 0.2,
+                    emissive: 0xd4af37,
+                    emissiveIntensity: 0.2
+                });
+            }
+        });
+        
+        scene.add(dragon);
+    },
+    undefined,
+    function (error) {
+        console.error('Erro ao carregar o dragão:', error);
+        // Fallback: criar um dragão básico se o modelo não carregar
+        const geometry = new THREE.TorusKnotGeometry(0.8, 0.3, 100, 16);
+        const material = new THREE.MeshStandardMaterial({ 
+            color: 0xd4af37,
+            metalness: 0.9,
+            roughness: 0.1
+        });
+        dragon = new THREE.Mesh(geometry, material);
+        scene.add(dragon);
+    }
+);
+
+// Ajuste de câmera para mobile
+camera.position.z = window.innerWidth < 768 ? 3 : 5;
+
+// Controles de órbita para mobile
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableZoom = false; // Desativa zoom para mobile
+controls.enablePan = false; // Desativa pan para mobile
+controls.maxPolarAngle = Math.PI * 0.8; // Limita rotação
+
+// Animação responsiva
+function animateDragon() {
+    requestAnimationFrame(animateDragon);
+    
+    if (dragon) {
+        dragon.rotation.y += 0.005;
+        
+        // Efeito de pulsação mais sutil para mobile
+        const scale = 0.5 + Math.sin(Date.now() * 0.001) * 0.05;
+        dragon.scale.set(scale, scale, scale);
+    }
+    
+    controls.update();
+    renderer.render(scene, camera);
+}
+
+animateDragon();
+
+// Redimensionamento responsivo
+window.addEventListener('resize', function() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    
+    // Ajuste adicional para mobile
+    if (window.innerWidth < 768) {
+        camera.position.z = 3;
+        if (dragon) dragon.scale.set(0.5, 0.5, 0.5);
+    } else {
+        camera.position.z = 5;
+        if (dragon) dragon.scale.set(0.8, 0.8, 0.8);
+    }
+});
