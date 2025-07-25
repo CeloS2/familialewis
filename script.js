@@ -419,109 +419,74 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Login do Administrador
+// ---------------- LOGIN DO ADMINISTRADOR -----------------
 const adminLoginBtn = document.getElementById('admin-login-btn');
 const adminModal = document.getElementById('admin-login-modal');
-const closeAdminModal = adminModal.querySelector('.close-modal');
+const closeAdminModal = document.querySelector('.close-admin-modal');
 const passwordInput = document.getElementById('admin-password-input');
 const submitPasswordBtn = document.getElementById('submit-admin-password');
 
-// Botões protegidos
 const addEventBtn = document.getElementById('add-event-btn');
 const imageUploadInput = document.getElementById('image-upload');
 
-// Senha protegida via hash SHA-256 (exemplo: "lewis2025")
-const ADMIN_HASH = 'b8cb6f51e71e4079d5b7a91f32fa01720db7be4433f3770ec582a2e75d2fa429'; // hash da senha "lewis2025"
+// SHA-256 da senha 'lewis2025'
+const ADMIN_HASH = 'b8cb6f51e71e4079d5b7a91f32fa01720db7be4433f3770ec582a2e75d2fa429';
 let isAdmin = false;
 let sessionTimeout;
 
-function hashString(str) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(str);
-    return crypto.subtle.digest('SHA-256', data).then(hashBuffer => {
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    });
+// Ocultar controles admin inicialmente
+function lockAdminControls() {
+    addEventBtn.style.display = 'none';
+    imageUploadInput.disabled = true;
 }
-
-// Mostrar modal
-adminLoginBtn.addEventListener('click', () => {
-    adminModal.style.display = 'flex';
-    passwordInput.value = '';
-});
-
-// Fechar modal
-closeAdminModal.addEventListener('click', () => {
-    adminModal.style.display = 'none';
-});
-
-// Validar senha
-submitPasswordBtn.addEventListener('click', async () => {
-    const typed = passwordInput.value.trim();
-    const hashed = await hashString(typed);
-    if (hashed === ADMIN_HASH) {
-        isAdmin = true;
-        adminModal.style.display = 'none';
-        unlockAdminControls();
-        startSessionTimeout();
-    } else {
-        alert('Senha incorreta!');
-    }
-});
-
 function unlockAdminControls() {
     addEventBtn.style.display = 'inline-block';
     imageUploadInput.disabled = false;
 }
 
-function lockAdminControls() {
-    addEventBtn.style.display = 'none';
-    imageUploadInput.disabled = true;
+// Função de hash SHA-256
+async function hashString(str) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(str);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// Timeout de sessão (5 minutos)
+// Login
+adminLoginBtn.addEventListener('click', () => {
+    adminModal.style.display = 'flex';
+    passwordInput.value = '';
+});
+closeAdminModal.addEventListener('click', () => {
+    adminModal.style.display = 'none';
+});
+submitPasswordBtn.addEventListener('click', async () => {
+    const typed = passwordInput.value.trim();
+    const hash = await hashString(typed);
+    if (hash === ADMIN_HASH) {
+        isAdmin = true;
+        unlockAdminControls();
+        adminModal.style.display = 'none';
+        startSessionTimeout();
+    } else {
+        alert('Senha incorreta!');
+    }
+});
+window.addEventListener('click', (e) => {
+    if (e.target === adminModal) adminModal.style.display = 'none';
+});
+
+// Sessão com timeout (5 minutos)
 function startSessionTimeout() {
     clearTimeout(sessionTimeout);
     sessionTimeout = setTimeout(() => {
         isAdmin = false;
         lockAdminControls();
-        alert('Sessão do admin expirada!');
+        alert('Sessão encerrada. Faça login novamente.');
     }, 5 * 60 * 1000);
 }
 
-// Início: bloquear tudo
+// Iniciar com proteção ativa
 lockAdminControls();
-
-#admin-login-bar {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
-}
-
-#admin-login-btn {
-    background: transparent;
-    color: #d4af37;
-    border: 2px solid #d4af37;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    border-radius: 30px;
-    cursor: pointer;
-    animation: pulseLock 1.5s infinite;
-}
-
-@keyframes pulseLock {
-    0% { box-shadow: 0 0 5px #d4af37; }
-    50% { box-shadow: 0 0 15px #d4af37; }
-    100% { box-shadow: 0 0 5px #d4af37; }
-}
-
-#admin-password-input {
-    width: 100%;
-    padding: 1rem;
-    margin: 1rem 0;
-    border: 1px solid #d4af37;
-    border-radius: 5px;
-    background: black;
-    color: white;
-}
+ });
