@@ -491,3 +491,37 @@ function startSessionTimeout() {
 
 // Início: bloquear tudo
 lockAdminControls();
+
+#admin-login-bar {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+#admin-login-btn {
+    background: transparent;
+    color: #d4af37;
+    border: 2px solid #d4af37;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    animation: pulseLock 1.5s infinite;
+}
+
+@keyframes pulseLock {
+    0% { box-shadow: 0 0 5px #d4af37; }
+    50% { box-shadow: 0 0 15px #d4af37; }
+    100% { box-shadow: 0 0 5px #d4af37; }
+}
+
+#admin-password-input {
+    width: 100%;
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 1px solid #d4af37;
+    border-radius: 5px;
+    background: black;
+    color: white;
+}
